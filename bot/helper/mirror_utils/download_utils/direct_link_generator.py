@@ -14,7 +14,12 @@ from lxml.etree import HTML
 from requests import Session, session as req_session, post
 from urllib.parse import parse_qs, quote, unquote, urlparse, urljoin
 from cloudscraper import create_scraper
-from lk21 import Bypass
+try:
+    from lk21 import Bypass
+    LK21_AVAILABLE = True
+except Exception:
+    Bypass = None
+    LK21_AVAILABLE = False
 from http.cookiejar import MozillaCookieJar
 
 from bot import LOGGER, config_dict
@@ -345,6 +350,8 @@ def github(url):
 
 def hxfile(url):
     try:
+        if not LK21_AVAILABLE:
+            raise DirectDownloadLinkException("ERROR: lk21 not available on Python 3.12")
         return Bypass().bypass_filesIm(url)
     except Exception as e:
         raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__}") from e
@@ -373,6 +380,8 @@ def anonfilesBased(url):
 
 def fembed(link):
     try:
+        if not LK21_AVAILABLE:
+            raise DirectDownloadLinkException("ERROR: lk21 not available on Python 3.12")
         dl_url = Bypass().bypass_fembed(link)
         count = len(dl_url)
         lst_link = [dl_url[i] for i in dl_url]
@@ -386,6 +395,8 @@ def sbembed(link):
     Based on https://github.com/zevtyardt/lk21
     """
     try:
+        if not LK21_AVAILABLE:
+            raise DirectDownloadLinkException("ERROR: lk21 not available on Python 3.12")
         dl_url = Bypass().bypass_sbembed(link)
         count = len(dl_url)
         lst_link = [dl_url[i] for i in dl_url]
@@ -447,6 +458,8 @@ def pixeldrain(url):
 
 def antfiles(url):
     try:
+        if not LK21_AVAILABLE:
+            raise DirectDownloadLinkException("ERROR: lk21 not available on Python 3.12")
         return Bypass().bypass_antfiles(url)
     except Exception as e:
         raise DirectDownloadLinkException(f"ERROR: {e.__class__.__name__}") from e
