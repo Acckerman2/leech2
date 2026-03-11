@@ -840,14 +840,11 @@ else:
 log_info("Creating client from BOT_TOKEN")
 import asyncio
 
-# Ensure there is a running event loop in the main thread before Pyrogram/uvloop
-# calls asyncio.get_event_loop(). In some deployment environments (uvloop
-# installed) asyncio.get_event_loop() raises RuntimeError when no loop is set.
-try:
-    asyncio.get_event_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+# Python 3.12 + uvloop: get_event_loop() always raises RuntimeError when no
+# loop is set on the main thread. Unconditionally create and set one here,
+# before Pyrogram instantiates its Dispatcher (which calls get_event_loop()).
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 bot = wztgClient('bot', TELEGRAM_API, TELEGRAM_HASH, bot_token=BOT_TOKEN, workers=1000,
                parse_mode=enums.ParseMode.HTML).start()
