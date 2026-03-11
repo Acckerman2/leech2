@@ -14,9 +14,10 @@ from bot.helper.mirror_utils.status_utils.mega_download_status import MegaDownlo
 from bot.helper.mirror_utils.status_utils.queue_status import QueueStatus
 from bot.helper.ext_utils.task_manager import is_queued, limit_checker, stop_duplicate_check
 
+_MegaListenerBase = MegaListener if MegaListener is not None else object
 
-class MegaAppListener(MegaListener):
-    _NO_EVENT_ON = (MegaRequest.TYPE_LOGIN, MegaRequest.TYPE_FETCH_NODES)
+class MegaAppListener(_MegaListenerBase):
+    _NO_EVENT_ON = (MegaRequest.TYPE_LOGIN, MegaRequest.TYPE_FETCH_NODES) if MegaRequest is not None else ()
     NO_ERROR = "no error"
 
     def __init__(self, continue_event: Event, listener):
@@ -121,6 +122,9 @@ class AsyncExecutor:
 
 
 async def add_mega_download(mega_link, path, listener, name):
+    if MegaApi is None:
+        await sendMessage(listener.message, "ERROR: MEGA SDK is not available in this environment.")
+        return
     MEGA_EMAIL = config_dict['MEGA_EMAIL']
     MEGA_PASSWORD = config_dict['MEGA_PASSWORD']
 
