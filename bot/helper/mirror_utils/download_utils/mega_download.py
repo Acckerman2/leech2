@@ -2,7 +2,10 @@
 from secrets import token_hex
 from aiofiles.os import makedirs
 from asyncio import Event
-from mega import MegaApi, MegaListener, MegaRequest, MegaTransfer, MegaError
+try:
+    from mega import MegaApi, MegaListener, MegaRequest, MegaTransfer, MegaError
+except ImportError:
+    MegaApi = MegaListener = MegaRequest = MegaTransfer = MegaError = None
 
 from bot import LOGGER, config_dict, download_dict_lock, download_dict, non_queued_dl, queue_dict_lock
 from bot.helper.telegram_helper.message_utils import sendMessage, sendStatusMessage

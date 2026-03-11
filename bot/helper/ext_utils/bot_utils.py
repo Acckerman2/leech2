@@ -20,7 +20,12 @@ from concurrent.futures import ThreadPoolExecutor
 from aiohttp import ClientSession as aioClientSession
 from psutil import virtual_memory, cpu_percent, disk_usage
 from requests import get as rget
-from mega import MegaApi
+try:
+    from mega import MegaApi
+    MEGA_AVAILABLE = True
+except ImportError:
+    MegaApi = None
+    MEGA_AVAILABLE = False
 from pyrogram.enums import ChatType
 from pyrogram.types import BotCommand
 from pyrogram.errors import PeerIdInvalid
@@ -175,7 +180,7 @@ def get_all_versions():
                                     'aria': aria2.client.get_version()['version'],
                                     'aiohttp': get_distribution('aiohttp').version,
                                     'gapi': get_distribution('google-api-python-client').version,
-                                    'mega': MegaApi('test').getVersion(),
+                                    'mega': MegaApi('test').getVersion() if MEGA_AVAILABLE else 'N/A',
                                     'qbit': get_client().app.version,
                                     'pyro': vpy,
                                     'ytdlp': get_distribution('yt-dlp').version}

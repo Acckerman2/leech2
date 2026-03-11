@@ -44,4 +44,3 @@ uv
 uvloop
 xattr
 yt-dlp
-megasdkrest
